@@ -111,7 +111,7 @@ $.fn.croneditor = function(opts) {
   $('#clear').click(function(){
     $('#cronString').val('* * * * * *');
     cronArr = ["*","*","*","*","*", "*"];
-    
+    $('#tabs .ui-button').removeClass('ui-state-active').attr('aria-pressed', false);
   });
 
   $( "#tabs-second .slider" ).slider({
