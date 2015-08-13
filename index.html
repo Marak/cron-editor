@@ -50,7 +50,9 @@
   <script type="text/javascript">
     $(document).ready(function(){
       // turn the div into a cron editor
-      $('.myDiv').croneditor();
+      $('.myDiv').croneditor({
+        value: "* * * * *"
+      });
     });
   </script>
 </head>

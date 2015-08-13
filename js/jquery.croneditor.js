@@ -6,6 +6,9 @@ $.fn.croneditor = function(opts) {
   $(el).html(tmpl);
 
   var cronArr = ["*", "*", "*", "*", "*", "*"];
+  if (typeof opts.value === "string") {
+    cronArr = opts.value.split(' ');
+  }
 
   $( ".tabs" ).tabs({
     activate: function( event, ui ) {
@@ -356,7 +359,7 @@ $.fn.croneditor = function(opts) {
   drawEachHours();
   drawEachDays();
   drawEachMonths();
-
+  drawCron();
 };
 
 // HTML Template for plugin
