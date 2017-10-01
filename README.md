@@ -16,7 +16,7 @@ The cron format supports seconds. If your cron editor doesn't support seconds yo
 $(document).ready(function(){
   // turn the div into a cron editor
   $('.myDiv').croneditor({
-    value: "* * * * *"
+    value: "* * * * * *"
   });
 });
 ```

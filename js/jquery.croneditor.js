@@ -12,6 +12,7 @@ $.fn.croneditor = function(opts) {
 
   $( ".tabs" ).tabs({
     activate: function( event, ui ) {
+      //console.dir($(ui.newTab));
       switch ($(ui.newTab).attr('id')) {
 
         // Seconds
@@ -19,7 +20,17 @@ $.fn.croneditor = function(opts) {
           cronArr[0] = "*";
         break;
         case 'button-second-n':
+          console.log('button-second-n')
           cronArr[0] = "*/" + $( "#tabs-second .slider" ).slider("value");
+        break;
+
+        case 'button-second-each':
+          console.log('button-second-each')
+          cronArr[0] = "*";
+          // TODO: toggle off selected minutes on load
+          //$('.tabs-minute-format input[checked="checked"]').click()
+          $('.tabs-second-format').html('');
+          drawEachSeconds();
         break;
 
         // Minutes
@@ -146,6 +157,47 @@ $.fn.croneditor = function(opts) {
       drawCron();
     }
   });
+
+  // TOOD: All draw* functions can be combined into a few smaller methods
+
+  function drawEachSeconds () {
+    // seconds
+    for (var i = 0; i < 60; i++) {
+      var padded = i;
+      if(padded.toString().length === 1) {
+        padded = "0" + padded;
+      }
+      $('.tabs-second-format').append('<input type="checkbox" id="second-check' + i + '"><label for="second-check' + i + '">' + padded + '</label>');
+      if (i !== 0 && (i+1) % 10 === 0) {
+        $('.tabs-second-format').append('<br/>');
+      }
+    }
+    $('.tabs-second-format input').button();
+    $('.tabs-second-format').buttonset();
+
+    $('.tabs-second-format input[type="checkbox"]').click(function(){
+      var newItem = $(this).attr('id').replace('second-check', '');
+      if(cronArr[0] === "*") {
+        cronArr[0] = $(this).attr('id').replace('second-check', '');
+      } else {
+
+        // if value already in list, toggle it off
+        var list = cronArr[0].split(',');
+        if (list.indexOf(newItem) !== -1) {
+          list.splice(list.indexOf(newItem), 1);
+          cronArr[0] = list.join(',');
+        } else {
+          // else toggle it on
+          cronArr[0] = cronArr[0] + "," + newItem;
+        }
+        if(cronArr[0] === "") {
+          cronArr[0] = "*";
+        }
+      }
+      drawCron();
+    });
+
+  }
 
   // TOOD: All draw* functions can be combined into a few smaller methods
 
@@ -355,6 +407,7 @@ $.fn.croneditor = function(opts) {
   };
 
   // TODO: Refactor these methods into smaller methods
+  drawEachSeconds();
   drawEachMinutes();
   drawEachHours();
   drawEachDays();
@@ -385,6 +438,7 @@ var tmpl = '<input type="text" id="cronString" value="* * * * * *" size="80"/>\
       <ul>\
         <li id="button-second-every"><a href="#tabs-second-every">Every second</a></li>\
         <li id="button-second-n"><a href="#tabs-second-n">Every n seconds</a></li>\
+        <li id="button-second-each"><a href="#tabs-second-each">Each seconds</a></li>\
       </ul>\
       <div id="tabs-second-every" class="preview">\
         <div>*</div>\
@@ -393,6 +447,10 @@ var tmpl = '<input type="text" id="cronString" value="* * * * * *" size="80"/>\
       <div id="tabs-second-n">\
         <div class="preview"> Every 1 seconds</div>\
         <div class="slider"></div>\
+      </div>\
+      <div id="tabs-second-each" class="preview">\
+        <div> Every 1 seconds</div>\
+        <div class="tabs-second-format"></div>\
       </div>\
     </div>\
   </div>\
